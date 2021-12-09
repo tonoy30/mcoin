@@ -10,7 +10,7 @@ class MCoin {
 	}
 
 	createGenesisBlock() {
-		return new Block(0, 'Genesis Block', '0');
+		return new Block(Date.parse('2017-01-01'), [], '0');
 	}
 
 	getLatestBlock() {
@@ -24,32 +24,54 @@ class MCoin {
 		if (!transaction.isValid()) {
 			throw new Error('Cannot add invalid transaction to chain');
 		}
+		if (transaction.amount <= 0) {
+			throw new Error('Transaction amount must be greater than 0');
+		}
+		// if (this.getBalanceOfAddress(transaction.from) < transaction.amount) {
+		// 	throw new Error('Not enough balance');
+		// }
 		this.pendingTransactions.push(transaction);
 	}
 
 	minePendingTransactions(minerAddress) {
-		let block = new Block(Date.now(), this.pendingTransactions);
+		const rewardTx = new Transaction(null, minerAddress, this.miningReward);
+		this.pendingTransactions.push(rewardTx);
+
+		const block = new Block(
+			Date.now(),
+			this.pendingTransactions,
+			this.getLatestBlock().hash
+		);
 		block.mineBlock(this.difficulty);
 		this.chain.push(block);
-		this.pendingTransactions = [
-			new Transaction('SYS', minerAddress, this.miningReward),
-		];
+
+		this.pendingTransactions = [];
 	}
 
-	isValid() {
+	isChainValid() {
+		const realGenesis = JSON.stringify(this.createGenesisBlock());
+		if (realGenesis !== JSON.stringify(this.chain[0])) {
+			return false;
+		}
+		// Check the remaining blocks on the chain to see if there hashes and
+		// signatures are correct
 		for (let i = 1; i < this.chain.length; i++) {
 			const currentBlock = this.chain[i];
-			const prevBlock = this.chain[i - 1];
-			if (currentBlock.hash !== currentBlock.calculateHash()) {
+			const previousBlock = this.chain[i - 1];
+
+			if (previousBlock.hash !== currentBlock.prevHash) {
 				return false;
 			}
-			if (currentBlock.prevHash !== prevBlock.hash) {
-				return false;
-			}
+
 			if (!currentBlock.hasValidTransactions()) {
 				return false;
 			}
+
+			if (currentBlock.hash !== currentBlock.calculateHash()) {
+				return false;
+			}
 		}
+
 		return true;
 	}
 	getBalanceOfAddress(address) {

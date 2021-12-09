@@ -1,4 +1,5 @@
-const { ec } = require('elliptic');
+const { createHash } = require('crypto');
+const { ec } = require('./keygen');
 
 class Transaction {
 	constructor(from, to, amount) {
@@ -20,7 +21,7 @@ class Transaction {
 		this.signature = sig.toDER('hex');
 	}
 	isValid() {
-		if (this.from === 'SYS') return true;
+		if (this.from === null) return true;
 		if (!this.signature || this.signature.length === 0) {
 			throw new Error('No signature in this transaction');
 		}
@@ -28,4 +29,4 @@ class Transaction {
 		return publicKey.verify(this.calculateHash(), this.signature);
 	}
 }
-module.export = { Transaction };
+module.exports = { Transaction };
