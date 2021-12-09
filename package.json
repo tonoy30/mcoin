@@ -1,0 +1,20 @@
+{
+	"name": "mcoin",
+	"version": "1.0.0",
+	"main": "index.js",
+	"dependencies": {},
+	"devDependencies": {},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"mcoin",
+		"blockchain",
+		"ethereum",
+		"ethereum-like",
+		"ethereum-blockchain"
+	],
+	"author": "Md Tonoy Akanda",
+	"license": "ISC",
+	"description": "Mcoin is a cryptocurrency that is based on the blockchain."
+}
