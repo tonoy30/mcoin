@@ -1,1 +1,1 @@
-# Mcoin is a tinny cryptocurrency inspired by the blockchain.
+# Mcoin is a tinny cryptocurrency inspired by ethereum.
