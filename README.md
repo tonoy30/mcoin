@@ -1,1 +1,1 @@
-# Mcoin is a cryptocurrency that is based on the blockchain.
+# Mcoin is a tinny cryptocurrency inspired by the blockchain.
